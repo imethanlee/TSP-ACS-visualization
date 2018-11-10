@@ -1,9 +1,8 @@
 from City import *
 import tkinter
 
-
 if __name__ == '__main__':
-    my_city = City("Oliver30.txt")
+    my_city = City("Gr17.txt")
     print((my_city.get_dis_matrix()))
 
 
