@@ -33,6 +33,10 @@ class ACS:
             self.__ant[i] = Ant()
 
         # 信息素初始化
+        seq = np.array(self.__m, dtype=int)
+        flag = np.array(self.__m, dtype=bool)
+        seq[0] = np.random.randint(0, self.__m)
+        flag[seq[0]] = 1
 
     def path_construct(self):
         pass
