@@ -85,9 +85,6 @@ class City:
 
         self.__dis_matrix = dis_array.tolist()
 
-    def set_city_file(self, string):
-        self.__city_file = string
-
     def get_dis_matrix(self):
         self.city_import()
         return np.array(self.__dis_matrix)

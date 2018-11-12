@@ -22,7 +22,7 @@ class ACS:
         self.__p = p                                            # 信息素局部挥发因子
         self.__gen = max_gen                                    # 最大进化代数
 
-        self.__ant = np.array(self.__m, dtype=Ant)                         # 蚁群
+        self.__ant = np.zeros(self.__m, dtype=Ant)            # 蚁群
         self.__city = City(city_name)                           # 城市对象
         self.__dis_matrix = self.__city.get_dis_matrix()        # 距离矩阵
         self.__pheromone_matrix = self.__dis_matrix             # 信息素矩阵
@@ -33,9 +33,9 @@ class ACS:
             self.__ant[i] = Ant()
 
         # 信息素初始化
-        seq = np.array(self.__m, dtype=int)
-        flag = np.array(self.__m, dtype=bool)
-        seq[0] = np.random.randint(0, self.__m)
+        seq = np.zeros(self.__m, dtype=int)
+        flag = np.zeros(self.__m, dtype=bool)
+        seq[0] = np.random.randint(self.__m)
         flag[seq[0]] = 1
 
     def path_construct(self):

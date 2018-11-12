@@ -1,7 +1,9 @@
 import numpy as np
+from City import *
 
 
 class Ant:
-    pass
+    def __init__(self):
+        self.__path = np.zeros(1)
 
 

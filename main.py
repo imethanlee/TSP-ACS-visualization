@@ -1,9 +1,9 @@
-from City import *
+from TSP import *
 import tkinter
 
 if __name__ == '__main__':
-    my_city = City("Gr17.txt")
-    print((my_city.get_dis_matrix()))
+    my_acs = ACS(city_name="Gr17.txt")
+    my_acs.init()
 
 
 
