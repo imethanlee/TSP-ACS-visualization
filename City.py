@@ -1,19 +1,23 @@
 import numpy as np
+num_city = 0
 
 
-class City:
+class City(object):
     def __init__(self, city_file_name):
         self.__city_file = city_file_name
         self.__num_city = 0
         self.__dis_matrix = []
+        self.__is_cord = -1
 
     def city_import(self):
         file = open(self.__city_file)
         string = file.read()
         if string[0] == "1":
             self.city_import_xy()
+            self.__is_cord = 1
         else:
             self.city_import_matrix()
+            self.__is_cord = 0
 
     def city_import_xy(self):
         # 从文件读取坐标数据
@@ -47,13 +51,7 @@ class City:
 
             self.__dis_matrix.append(dis_list)
 
-        # 输出测试
-        """
-        for i in range(self.__num_city):
-            for j in range(self.__num_city):
-                print(self.__dis_matrix[i][j], end=" ")
-            print()
-        """
+        num_city = self.__num_city
 
     def city_import_matrix(self):
         file = open(self.__city_file)  # 从文件读取坐标数据
@@ -84,6 +82,7 @@ class City:
                 cnt = cnt + 1
 
         self.__dis_matrix = dis_array.tolist()
+        num_city = self.__num_city
 
     def get_dis_matrix(self):
         self.city_import()

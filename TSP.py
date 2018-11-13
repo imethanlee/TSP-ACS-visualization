@@ -1,9 +1,8 @@
-from City import *
 from Ant import *
 import numpy as np
 
 
-class ACS:
+class ACS(object):
     def __init__(self,
                  num_ant=10,
                  w_heuristic=2,
@@ -13,7 +12,6 @@ class ACS:
                  max_gen=2000,
                  city_name=""
                  ):
-
         self.__m = num_ant                                      # 蚂蚁数目
         self.__b = w_heuristic                                  # 启发式信息权重
         self.__a = w_pheromone_vapor                            # 信息素挥发因子
@@ -22,7 +20,7 @@ class ACS:
         self.__p = p                                            # 信息素局部挥发因子
         self.__gen = max_gen                                    # 最大进化代数
 
-        self.__ant = np.zeros(self.__m, dtype=Ant)            # 蚁群
+        self.__ant = np.zeros(self.__m, dtype=Ant)              # 蚁群
         self.__city = City(city_name)                           # 城市对象
         self.__dis_matrix = self.__city.get_dis_matrix()        # 距离矩阵
         self.__pheromone_matrix = self.__dis_matrix             # 信息素矩阵
@@ -32,11 +30,14 @@ class ACS:
         for i in range(self.__m):
             self.__ant[i] = Ant()
 
-        # 信息素初始化
+        # 信息素初始化 (贪婪选择一条道路)
         seq = np.zeros(self.__m, dtype=int)
         flag = np.zeros(self.__m, dtype=bool)
         seq[0] = np.random.randint(self.__m)
         flag[seq[0]] = 1
+        inter_dis = np.zeros((num_city, num_city))
+        for i in range(0, self.__m):
+            pass
 
     def path_construct(self):
         pass
@@ -49,4 +50,3 @@ class ACS:
         for i in range(self.__gen):
             self.path_construct()
             self.pheromone_update()
-        pass
