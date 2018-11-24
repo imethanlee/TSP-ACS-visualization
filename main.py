@@ -4,7 +4,7 @@ import tkinter
 if __name__ == '__main__':
     my_acs = ACS(city_name="Gr17.txt")
     my_acs.init()
-
+    my_acs.path_construct()
     a1 = Ant()
     a2 = Ant()
     a1.test = 1
