@@ -2,13 +2,12 @@ from TSP import *
 import tkinter
 
 if __name__ == '__main__':
-    my_acs = ACS(city_name="Gr17.txt")
-    my_acs.init()
-    my_acs.path_construct()
-    a1 = Ant()
-    a2 = Ant()
-    a1.test = 1
+    my_acs = ACS(city_name="Oliver30.txt")
 
+    my_acs.init()
+    for i in range(1250):
+        my_acs.path_construct()
+        my_acs.pheromone_update()
 
 
 

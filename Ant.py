@@ -20,3 +20,6 @@ class Ant(object):
     def get_dis(self):
         return self.dis
 
+    def __lt__(self, other):
+        return self.dis < other.dis
+

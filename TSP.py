@@ -1,5 +1,6 @@
 from Ant import *
 import numpy as np
+import copy
 
 
 class ACS(object):
@@ -10,7 +11,7 @@ class ACS(object):
                  w_pheromone_vapor=0.1,
                  q0=0.9,
                  p=0.1,
-                 max_gen=2000,
+                 max_gen=5000,
                  city_name=""
                  ):
         self.m = num_ant                                        # 蚂蚁数目
@@ -22,6 +23,7 @@ class ACS(object):
         self.gen = max_gen                                      # 最大进化代数
 
         self.ant = np.zeros(self.m, dtype=Ant)                  # 蚁群
+        self.best = Ant()                                       # 最优蚂蚁
         self.city = City(city_name)                             # 城市对象
         self.dis_matrix = self.city.get_dis_matrix()            # 距离矩阵
         self.num_city = self.city.num_city                      # 城市数量
@@ -61,14 +63,14 @@ class ACS(object):
         s = s + self.dis_matrix[0][seq[self.num_city - 1]]
 
         # 计算信息素
-        t0 = 1 / (self.num_city * s)
+        self.t0 = 1 / (self.num_city * s)
         for i in range(self.num_city):
             for j in range(self.num_city):
-                self.pheromone_matrix[i][j] = t0
+                self.pheromone_matrix[i][j] = self.t0
 
     def path_construct(self):
 
-        # 计算信息素权值&启发式信息权值
+        # 计算信息素权值 和 启发式信息权值
         t = np.zeros((self.num_city, self.num_city), dtype=float)
         n = np.zeros((self.num_city, self.num_city), dtype=float)
         for i in range(self.num_city):
@@ -126,6 +128,23 @@ class ACS(object):
                                 self.ant[i].path[j + 1] = k
                                 flag[self.ant[i].path[j + 1]] = 1
                                 break
+            # 在每只蚂蚁构建完路径后进行信息素局部更新
+            for j in range(self.num_city):
+                if j != self.num_city - 1:
+                    self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[j + 1]] = \
+                        (1 - self.p) * self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[j + 1]]
+                    self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[j + 1]] = \
+                        self.p * self.t0 + self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[j + 1]]
+                    self.pheromone_matrix[self.ant[i].path[j + 1]][self.ant[i].path[j]] = \
+                        self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[j + 1]]
+                else:
+                    self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[0]] = \
+                        (1 - self.p) * self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[0]]
+                    self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[0]] = \
+                        self.p * self.t0 + self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[0]]
+                    self.pheromone_matrix[self.ant[i].path[0]][self.ant[i].path[j]] = \
+                        self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[0]]
+
         """
             for j in range(self.num_city):
                 print(self.ant[i].path[j], end=" ")
@@ -133,7 +152,40 @@ class ACS(object):
         """
 
     def pheromone_update(self):
-        pass
+
+        # 先计算每只蚂蚁的总距离
+        for i in range(self.m):
+            self.ant[i].dis = 0
+            for j in range(self.num_city):
+                if j != self.num_city - 1:
+                    self.ant[i].dis = \
+                        self.ant[i].dis + self.dis_matrix[self.ant[i].path[j]][self.ant[i].path[j + 1]]
+                else:
+                    self.ant[i].dis = \
+                        self.ant[i].dis + self.dis_matrix[self.ant[i].path[j]][self.ant[i].path[0]]
+        self.ant.sort()
+
+        # 更新历史最优蚂蚁
+        if self.ant[0].dis < self.best.dis:
+            self.best = copy.deepcopy(self.ant[0])
+
+        print(self.best.dis)
+
+        # 对所有路径进行信息素蒸发
+        for i in range(self.num_city):
+            for j in range(self.num_city):
+                self.pheromone_matrix[i][j] = (1 - self.a) * self.pheromone_matrix[i][j]
+
+        # 对历史最优蚂蚁的路径执行信息素更新
+        for i in range(self.num_city):
+            if i != self.num_city - 1:
+                self.pheromone_matrix[self.best.path[i]][self.best.path[i + 1]] = self.a * (1.0 / self.best.dis)
+                self.pheromone_matrix[self.best.path[i + 1]][self.best.path[i]] = \
+                    self.pheromone_matrix[self.best.path[i]][self.best.path[i + 1]]
+            else:
+                self.pheromone_matrix[self.best.path[i]][self.best.path[0]] = self.a * (1.0 / self.best.dis)
+                self.pheromone_matrix[self.best.path[0]][self.best.path[i]] = \
+                    self.pheromone_matrix[self.best.path[i]][self.best.path[0]]
 
 
 class NextCityInit(object):
