@@ -2,7 +2,7 @@ from TSP import *
 import tkinter
 
 if __name__ == '__main__':
-    my_acs = ACS(city_name="Oliver30.txt")
+    my_acs = ACS(city_name="Gr17.txt")
 
     my_acs.init()
     for i in range(1250):
