@@ -109,7 +109,7 @@ if __name__ == '__main__':
     canvas_curve.place(x=825, y=40)
 
 
-    # Test
+    # 画布测试
     plt.figure(figsize=(5.8, 5.8))
     plt.scatter([0, 1, 11, 3, 6, 16, 4, 0], [2, 1, 2, 3, 12, 3, 9, 2])
     plt.plot([0, 1, 11, 3, 6, 16, 4, 0], [2, 1, 2, 3, 12, 3, 9, 2])
