@@ -20,6 +20,10 @@ class Ant(object):
     def get_dis(self):
         return self.dis
 
+    def copy(self):
+        temp = self
+        return temp
+
     def __lt__(self, other):
         return self.dis < other.dis
 

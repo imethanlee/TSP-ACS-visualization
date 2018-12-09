@@ -66,16 +66,16 @@ class ACS(object):
         n = np.zeros((self.num_city, self.num_city), dtype=float)
         for j in range(self.num_city):
             for k in range(j + 1, self.num_city):
-                t[j][k] = t[k][j] = np.power(self.pheromone_matrix[j][k], 1)
+                t[j][k] = t[k][j] = np.power(self.pheromone_matrix[j][k], 1.0)
                 n[j][k] = n[k][j] = np.power(1.0 / self.dis_matrix[j][k], self.b)
 
         # 为每只蚂蚁构建路径
         for i in range(self.m):
-            flag = np.zeros(self.num_city, dtype=int)  # 记录已经访问过的城市
+            flag = np.zeros(self.num_city, dtype=bool)  # 记录已经访问过的城市
 
             # 随机选取出发城市
-            self.ant[i].path[0] = np.random.randint(0, self.num_city)
-            flag[self.ant[i].path[0]] = 1
+            city_now = self.ant[i].path[0] = np.random.randint(0, self.num_city)
+            flag[city_now] = 1
 
             # 选择之后的城市
             for j in range(self.num_city - 1):
@@ -83,24 +83,22 @@ class ACS(object):
                 for k in range(self.num_city):
                     next_city[k] = NextCityCons()
                     next_city[k].id = k
+                    next_city[k].product = 0
 
                 pp = np.random.random()  # 伪随机概率
 
                 if pp < self.q0:         # 开发 exploitation
                     for k in range(self.num_city):
-                        if flag[k] == 1:
-                            continue
-                        else:
+                        if flag[k] == 0:
                             next_city[k].product = t[self.ant[i].path[j]][k] * n[self.ant[i].path[j]][k]
                     next_city.sort()
-                    self.ant[i].path[j + 1] = next_city[0].id
-                    flag[self.ant[i].path[j + 1]] = 1
+                    city_now = self.ant[i].path[j + 1] = next_city[0].id
+                    flag[city_now] = 1
+
                     # local update
-                    self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[j + 1]] = \
-                        self.pheromone_matrix[self.ant[i].path[j + 1]][self.ant[i].path[j]] = \
-                        (1 - self.p) * \
-                        self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[j + 1]] + \
-                        self.p * self.t0
+                    self.pheromone_matrix[self.ant[i].path[j]][city_now] = \
+                        self.pheromone_matrix[city_now][self.ant[i].path[j]] = \
+                        (1 - self.p) * self.pheromone_matrix[self.ant[i].path[j]][city_now] + self.p * self.t0
                 else:
                     p_sum = 0.0
                     p = np.zeros(self.num_city, dtype=float)
@@ -122,17 +120,15 @@ class ACS(object):
                         if flag[k] == 0:
                             rwsp = rwsp + p[k]
                             if rwsp > rp:
-                                self.ant[i].path[j + 1] = k
-                                flag[self.ant[i].path[j + 1]] = 1
+                                city_now = self.ant[i].path[j + 1] = k
+                                flag[city_now] = 1
                                 break
                     # local update
-                    self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[j + 1]] = \
-                        self.pheromone_matrix[self.ant[i].path[j + 1]][self.ant[i].path[j]] = \
-                        (1 - self.p) * \
-                        self.pheromone_matrix[self.ant[i].path[j]][self.ant[i].path[j + 1]] + \
-                        self.p * self.t0
+                    self.pheromone_matrix[self.ant[i].path[j]][city_now] = \
+                        self.pheromone_matrix[city_now][self.ant[i].path[j]] = \
+                        (1 - self.p) * self.pheromone_matrix[self.ant[i].path[j]][city_now] + self.p * self.t0
 
-            # local update for the last edge
+            # local update 最后一条边
             self.pheromone_matrix[self.ant[i].path[self.num_city - 1]][self.ant[i].path[0]] = \
                 self.pheromone_matrix[self.ant[i].path[0]][self.ant[i].path[self.num_city - 1]] = \
                 (1 - self.p) * \
@@ -154,13 +150,15 @@ class ACS(object):
 
         # 更新历史最优蚂蚁
         if self.ant[0].dis < self.best.dis:
-            self.best = copy.deepcopy(self.ant[0])
+            self.best = self.ant[0].copy()
             print(self.best.dis)
 
         # 对所有路径进行信息素蒸发
         for i in range(self.num_city):
-            for j in range(self.num_city):
-                self.pheromone_matrix[i][j] = (1 - self.a) * self.pheromone_matrix[i][j]
+            for j in range(i, self.num_city):
+                self.pheromone_matrix[j][i] = \
+                    self.pheromone_matrix[i][j] = \
+                    (1 - self.a) * self.pheromone_matrix[i][j]
 
         # 对历史最优蚂蚁的路径执行信息素释放
         for i in range(self.num_city):
@@ -176,10 +174,11 @@ class ACS(object):
                     self.a * (1.0 / self.best.dis)
 
 
+# 辅助类
 class NextCityInit(object):
     def __init__(self):
-        self.id = 1
-        self.dis = 1
+        self.id = 0
+        self.dis = 0.0
 
     def __lt__(self, other):
         return self.dis < other.dis
@@ -188,7 +187,7 @@ class NextCityInit(object):
 class NextCityCons(object):
     def __init__(self):
         self.id = 0
-        self.product = 0
+        self.product = 0.0
 
     def __lt__(self, other):
         return self.product > other.product
