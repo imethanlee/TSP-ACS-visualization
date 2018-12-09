@@ -120,9 +120,10 @@ if __name__ == '__main__':
     canvas_curve.create_image((260, 260), image=im)
 
     # 开始 ACS
-    """
+
     my_acs = ACS(city_name="Gr17.txt")
     my_acs.init()
+    """
     for i in range(1250):
         my_acs.path_construct()
         my_acs.pheromone_update()
