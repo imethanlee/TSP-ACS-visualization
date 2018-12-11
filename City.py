@@ -7,6 +7,8 @@ class City(object):
         self.num_city = 0
         self.dis_matrix = []
         self.is_cord = -1
+        self.x_list = np.zeros(0, dtype=int)
+        self.y_list = np.zeros(0, dtype=int)
 
     def city_import(self):
         file = open(self.city_file)
@@ -40,6 +42,8 @@ class City(object):
             data_n.append(i)
             data_x.append(int(data[1]))
             data_y.append(int(data[2]))
+        self.x_list = np.array(data_x)
+        self.y_list = np.array(data_y)
 
         # 计算城市间的距离
         for i in range(self.num_city):

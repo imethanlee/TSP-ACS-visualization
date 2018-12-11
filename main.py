@@ -3,9 +3,13 @@ import tkinter as tk
 from tkinter import ttk
 import matplotlib.pyplot as plt
 from PIL import Image, ImageTk
-
+import threading
 
 if __name__ == '__main__':
+
+    # 线程设置
+    lock = threading.RLock()
+    running = False
 
     def run():
         problem = file.get() + ".txt"
@@ -18,17 +22,45 @@ if __name__ == '__main__':
         my_acs = ACS(city_name=problem)
         my_acs.init()
 
-        # """
         for i in range(max_gen):
             if break_now.get() == 0:
                 my_acs.path_construct()
                 my_acs.pheromone_update()
-                cgen.set(i)
-        # """
+                cgen.set(i + 1)
+                draw_path(my_acs)
+                canvas_path.update()
+                canvas_curve.update()
+                minavg.set(my_acs.best.dis)
+
+    def draw_path(acs):
+        global im
+        x_seq = []
+        y_seq = []
+        for i in range(acs.num_city):
+            x_seq.append(acs.city.x_list[acs.best.path[i]])
+            y_seq.append(acs.city.y_list[acs.best.path[i]])
+        x_seq.append(acs.city.x_list[acs.best.path[0]])
+        y_seq.append(acs.city.y_list[acs.best.path[0]])
+
+        plt.figure(figsize=(5.8, 5.8))
+        plt.plot(x_seq, y_seq, color='blue')
+        plt.scatter(x_seq, y_seq,color='black')
+        for a, b in zip(x_seq, y_seq):
+            plt.text(a, b, (a, b), ha='center', va='bottom', fontsize=8)
+        plt.savefig("update_path.jpg")
+        plt.close("all")
+
+        a = Image.open("update_path.jpg")
+        im = ImageTk.PhotoImage(a)
+        canvas_path.delete("all")
+        canvas_path.create_image((260, 260), image=im)
+
 
     def command_start():
         btn_start.config(state=tk.DISABLED)
         btn_stop.config(state=tk.NORMAL)
+        lock.acquire()
+        lock.release()
         run()
 
     def command_stop():
@@ -37,7 +69,11 @@ if __name__ == '__main__':
         break_now.set(1)
 
     def command_clear():
-        pass
+        canvas_curve.delete("all")
+        canvas_path.delete("all")
+        minavg.set(0)
+        cgen.set(0)
+        stddev.set(0)
 
 
     # 主窗口设计
@@ -45,7 +81,7 @@ if __name__ == '__main__':
     window.title("What is the shortest path?")
     window.geometry("1400x600+300+200")
     # 立即停止变量
-    break_now = tk.IntVar()
+    break_now = tk.BooleanVar()
 
     # 测试数据Label
     label_choose = tk.Label(text="Choose your problem", font=15)
@@ -110,14 +146,14 @@ if __name__ == '__main__':
     entry_stddev.place(x=40, y=390)
 
     # 当前进化代数label1
-    label_gen = tk.Label(text="Current Gen:", font=15)
+    label_gen = tk.Label(text="Current Generation:", font=15)
     label_gen.place(x=40, y=420)
 
     # 当前进化代数label2
     cgen = tk.IntVar()
     cgen.set(0)
     label_cgen = tk.Label(textvariable=cgen, font=15)
-    label_cgen.place(x=40, y=450)
+    label_cgen.place(x=116, y=450)
 
     # 停止Button
     btn_stop = tk.Button(text="Stop it!", font=15, bg='grey35', fg='yellow',
@@ -148,20 +184,15 @@ if __name__ == '__main__':
 
 
     # 画布测试
-
     plt.figure(figsize=(5.8, 5.8))
     plt.scatter([0, 1, 11, 3, 6, 16, 4, 0], [2, 1, 2, 3, 12, 3, 9, 2])
     plt.plot([0, 1, 11, 3, 6, 16, 4, 0], [2, 1, 2, 3, 12, 3, 9, 2])
     plt.savefig("temp.jpg")
+    plt.close("all")
     image = Image.open("temp.jpg")
     im = ImageTk.PhotoImage(image)
     canvas_path.create_image((260, 260), image=im)
     canvas_curve.create_image((260, 260), image=im)
 
-
     # 必须放在最后的mainloop
     window.mainloop()
-
-
-
-
