@@ -148,7 +148,7 @@ if __name__ == '__main__':
 
 
     # 画布测试
-    """
+
     plt.figure(figsize=(5.8, 5.8))
     plt.scatter([0, 1, 11, 3, 6, 16, 4, 0], [2, 1, 2, 3, 12, 3, 9, 2])
     plt.plot([0, 1, 11, 3, 6, 16, 4, 0], [2, 1, 2, 3, 12, 3, 9, 2])
@@ -157,7 +157,7 @@ if __name__ == '__main__':
     im = ImageTk.PhotoImage(image)
     canvas_path.create_image((260, 260), image=im)
     canvas_curve.create_image((260, 260), image=im)
-    """
+
 
     # 必须放在最后的mainloop
     window.mainloop()
