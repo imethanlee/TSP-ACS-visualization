@@ -4,12 +4,16 @@ from tkinter import ttk
 import matplotlib.pyplot as plt
 from PIL import Image, ImageTk
 import threading
+import numpy as np
 
 if __name__ == '__main__':
 
     # 线程设置
     lock = threading.RLock()
     running = False
+
+    # 结果数据
+    avg_list = []
 
     def run():
         problem = file.get() + ".txt"
@@ -19,21 +23,29 @@ if __name__ == '__main__':
 
         # 开始 ACS
         break_now.set(0)
-        my_acs = ACS(city_name=problem)
-        my_acs.init()
 
-        for i in range(max_gen):
-            if break_now.get() == 0:
-                my_acs.path_construct()
-                my_acs.pheromone_update()
-                cgen.set(i + 1)
-                draw_path(my_acs)
-                canvas_path.update()
-                canvas_curve.update()
-                minavg.set(my_acs.best.dis)
+        for i in range(test_times):
+            avg_list.append([])
+            my_acs = ACS(city_name=problem)
+            my_acs.init()
+            my_acs.init()
+            for j in range(max_gen):
+                if break_now.get() == 0:
+                    my_acs.path_construct()
+                    my_acs.pheromone_update()
+                    cgen.set(j + 1)
+                    draw_path(my_acs)
+                    canvas_path.update()
+                    canvas_curve.update()
+                    minavg.set(my_acs.best.dis)
+                    avg_list[i].append(my_acs.best.dis)
+        if break_now.get() == 0:
+            draw_curve()
+        btn_stop.config(state=tk.DISABLED)
+        btn_start.config(state=tk.NORMAL)
 
     def draw_path(acs):
-        global im
+        global im_path
         x_seq = []
         y_seq = []
         for i in range(acs.num_city):
@@ -42,7 +54,7 @@ if __name__ == '__main__':
         x_seq.append(acs.city.x_list[acs.best.path[0]])
         y_seq.append(acs.city.y_list[acs.best.path[0]])
 
-        plt.figure(figsize=(5.8, 5.8))
+        plt.figure(figsize=(5.5, 5.5))
         plt.plot(x_seq, y_seq, color='blue')
         plt.scatter(x_seq, y_seq,color='black')
         for a, b in zip(x_seq, y_seq):
@@ -51,10 +63,38 @@ if __name__ == '__main__':
         plt.close("all")
 
         a = Image.open("update_path.jpg")
-        im = ImageTk.PhotoImage(a)
+        im_path = ImageTk.PhotoImage(a)
         canvas_path.delete("all")
-        canvas_path.create_image((260, 260), image=im)
+        canvas_path.create_image((260, 260), image=im_path)
 
+    def draw_curve():
+        global im_curve
+        avg_x = []
+        avg_y = []
+        for i in range(gen.get()):
+            avg_x.append(i)
+
+        for i in range(gen.get()):
+            a = 0.0
+            for j in range(times.get()):
+                a = a + avg_list[j][i]
+            avg_y.append(a / times.get())
+
+        plt.figure(figsize=(5.5, 5.5))
+        plt.plot(avg_x, avg_y)
+        plt.savefig("result_curve.jpg")
+        plt.close("all")
+        a = Image.open("result_curve.jpg")
+        im_curve = ImageTk.PhotoImage(a)
+        canvas_curve.delete("all")
+        canvas_curve.create_image((270, 260), image=im_curve)
+
+        # 计算标准差
+        dev_list = []
+        for i in range(times.get()):
+            dev_list.append(avg_list[i][gen.get() - 1])
+        dev_arr = np.array(dev_list)
+        stddev.set(np.std(dev_arr, ddof=1))
 
     def command_start():
         btn_start.config(state=tk.DISABLED)
@@ -69,8 +109,13 @@ if __name__ == '__main__':
         break_now.set(1)
 
     def command_clear():
-        canvas_curve.delete("all")
-        canvas_path.delete("all")
+        global image_path, im_path, image_curve, im_curve
+        image_path = Image.open("path_init.jpg")
+        im_path = ImageTk.PhotoImage(image_path)
+        canvas_path.create_image((260, 260), image=im_path)
+        image_curve = Image.open("curve_init.jpg")
+        im_curve = ImageTk.PhotoImage(image_curve)
+        canvas_curve.create_image((260, 260), image=im_curve)
         minavg.set(0)
         cgen.set(0)
         stddev.set(0)
@@ -152,8 +197,8 @@ if __name__ == '__main__':
     # 当前进化代数label2
     cgen = tk.IntVar()
     cgen.set(0)
-    label_cgen = tk.Label(textvariable=cgen, font=15)
-    label_cgen.place(x=116, y=450)
+    label_cgen = tk.Label(textvariable=cgen, font=("宋体", 30))
+    label_cgen.place(x=110, y=445)
 
     # 停止Button
     btn_stop = tk.Button(text="Stop it!", font=15, bg='grey35', fg='yellow',
@@ -182,17 +227,26 @@ if __name__ == '__main__':
     canvas_curve = tk.Canvas(window, bg='grey', width=520, height=520)
     canvas_curve.place(x=825, y=40)
 
-
-    # 画布测试
+    # 画布初始化
     plt.figure(figsize=(5.8, 5.8))
-    plt.scatter([0, 1, 11, 3, 6, 16, 4, 0], [2, 1, 2, 3, 12, 3, 9, 2])
-    plt.plot([0, 1, 11, 3, 6, 16, 4, 0], [2, 1, 2, 3, 12, 3, 9, 2])
-    plt.savefig("temp.jpg")
+    plt.plot([1, 1, 4, 7, 1, 7, 7], [1, 5, 9, 5, 5, 5, 1])
+    plt.plot([15, 9, 9, 15], [1, 1, 9, 9])
+    plt.plot([17, 23, 23, 17, 17, 23], [1, 1, 5, 5, 9, 9])
+    plt.savefig("path_init.jpg")
     plt.close("all")
-    image = Image.open("temp.jpg")
-    im = ImageTk.PhotoImage(image)
-    canvas_path.create_image((260, 260), image=im)
-    canvas_curve.create_image((260, 260), image=im)
+    image_path = Image.open("path_init.jpg")
+    im_path = ImageTk.PhotoImage(image_path)
+    canvas_path.create_image((260, 260), image=im_path)
+
+    plt.figure(figsize=(5.8, 5.8))
+    plt.plot([1, 7, 4, 4], [9, 9, 9, 1])
+    plt.plot([9, 15, 15, 9, 9, 15], [1, 1, 5, 5, 9, 9])
+    plt.plot([17, 17, 23, 23, 17], [1, 9, 9, 5, 5])
+    plt.savefig("curve_init.jpg")
+    plt.close("all")
+    image_curve = Image.open("curve_init.jpg")
+    im_curve = ImageTk.PhotoImage(image_curve)
+    canvas_curve.create_image((260, 260), image=im_curve)
 
     # 必须放在最后的mainloop
     window.mainloop()
