@@ -15,6 +15,10 @@ if __name__ == '__main__':
     # 结果数据
     avg_list = []
 
+    # UI字体大小
+    font_size = 10
+    font_name = "微软雅黑"
+
     def run():
         problem = file.get() + ".txt"
         max_gen = gen.get()
@@ -55,7 +59,7 @@ if __name__ == '__main__':
         y_seq.append(acs.city.y_list[acs.best.path[0]])
 
         plt.figure(figsize=(5.5, 5.5))
-        plt.plot(x_seq, y_seq, color='blue')
+        plt.plot(x_seq, y_seq, color='blue', linewidth='1')
         plt.scatter(x_seq, y_seq,color='black')
         for a, b in zip(x_seq, y_seq):
             plt.text(a, b, (a, b), ha='center', va='bottom', fontsize=8)
@@ -81,7 +85,8 @@ if __name__ == '__main__':
             avg_y.append(a / times.get())
 
         plt.figure(figsize=(5.5, 5.5))
-        plt.plot(avg_x, avg_y)
+        l, = plt.plot(avg_x, avg_y, linewidth='1', color='red')
+        plt.legend(handles=[l], labels=['Average Minimum Distance'])
         plt.savefig("result_curve.jpg")
         plt.close("all")
         a = Image.open("result_curve.jpg")
@@ -90,11 +95,13 @@ if __name__ == '__main__':
         canvas_curve.create_image((270, 260), image=im_curve)
 
         # 计算标准差
-        dev_list = []
-        for i in range(times.get()):
-            dev_list.append(avg_list[i][gen.get() - 1])
-        dev_arr = np.array(dev_list)
-        stddev.set(np.std(dev_arr, ddof=1))
+        if times.get() > 1:
+            dev_list = []
+            for i in range(times.get()):
+                dev_list.append(avg_list[i][gen.get() - 1])
+            dev_arr = np.array(dev_list)
+            stddev.set(np.std(dev_arr, ddof=1))
+        avg_list.clear()
 
     def command_start():
         btn_start.config(state=tk.DISABLED)
@@ -129,7 +136,7 @@ if __name__ == '__main__':
     break_now = tk.BooleanVar()
 
     # 测试数据Label
-    label_choose = tk.Label(text="Choose your problem", font=15)
+    label_choose = tk.Label(text="Choose your problem", font=(font_name, font_size))
     label_choose.place(x=40, y=10)
 
     # 测试数据下拉栏
@@ -140,7 +147,7 @@ if __name__ == '__main__':
     file_chosen.place(x=40, y=40)
 
     # 进化代数label
-    label_gen = tk.Label(text="Max Generation", font=15)
+    label_gen = tk.Label(text="Max Generation", font=(font_name, font_size))
     label_gen.place(x=40, y=70)
 
     # 进化代数下拉栏
@@ -151,7 +158,7 @@ if __name__ == '__main__':
     gen_chosen.place(x=40, y=100)
 
     # 试验次数label
-    label_times = tk.Label(text="Test Times", font=15)
+    label_times = tk.Label(text="Test Times", font=(font_name, font_size))
     label_times.place(x=40, y=130)
 
     # 试验次数下拉栏
@@ -162,16 +169,16 @@ if __name__ == '__main__':
     times_chosen.place(x=40, y=160)
 
     # 开始按钮
-    btn_start = tk.Button(text="Let's find out !", font=15, bg='grey35', fg='yellow',
+    btn_start = tk.Button(text="Let's find out !", font=(font_name, font_size + 4), bg='grey35', fg='yellow',
                           command=lambda: command_start())
     btn_start.place(x=40, y=200, width=170, height=50)
 
     # 结果label
-    label_result = tk.Label(text="Result:", font=15)
+    label_result = tk.Label(text="Result:", font=(font_name, font_size))
     label_result.place(x=40, y=270)
 
     # 最小距离label
-    label_minavg = tk.Label(text="Minimum Distance:", font=15)
+    label_minavg = tk.Label(text="Minimum Distance:", font=(font_name, font_size))
     label_minavg.place(x=40, y=300)
 
     # 最小距离Entry
@@ -181,7 +188,7 @@ if __name__ == '__main__':
     entry_minavg.place(x=40, y=330)
 
     # 标准差label
-    label_stdvar = tk.Label(text="Standard Deviation:", font=15)
+    label_stdvar = tk.Label(text="Standard Deviation:", font=(font_name, font_size))
     label_stdvar.place(x=40, y=360)
 
     # 标准差Entry
@@ -191,7 +198,7 @@ if __name__ == '__main__':
     entry_stddev.place(x=40, y=390)
 
     # 当前进化代数label1
-    label_gen = tk.Label(text="Current Generation:", font=15)
+    label_gen = tk.Label(text="Current Generation:", font=(font_name, font_size))
     label_gen.place(x=40, y=420)
 
     # 当前进化代数label2
@@ -201,18 +208,18 @@ if __name__ == '__main__':
     label_cgen.place(x=110, y=445)
 
     # 停止Button
-    btn_stop = tk.Button(text="Stop it!", font=15, bg='grey35', fg='yellow',
+    btn_stop = tk.Button(text="Stop it!", font=(font_name, font_size + 4), bg='grey35', fg='yellow',
                          command=lambda: command_stop())
     btn_stop.place(x=40, y=500, width=80, height=50)
     btn_stop.config(state=tk.DISABLED)
 
     # 清除Button
-    btn_clear = tk.Button(text="Clear", font=15, bg='grey35', fg='yellow',
+    btn_clear = tk.Button(text="Clear", font=(font_name, font_size + 4), bg='grey35', fg='yellow',
                           command=lambda: command_clear())
     btn_clear.place(x=130, y=500, width=80, height=50)
 
     # 路径label
-    label_path = tk.Label(text="Current Optimal Path:", font=13)
+    label_path = tk.Label(text="Current Optimal Path:", font=(font_name, font_size + 4))
     label_path.place(x=250, y=10)
 
     # 路径画布
@@ -220,7 +227,7 @@ if __name__ == '__main__':
     canvas_path.place(x=250, y=40)
 
     # 进化曲线label
-    label_curve = tk.Label(text="Evolution curve:", font=13)
+    label_curve = tk.Label(text="Evolution curve:", font=(font_name, font_size + 4))
     label_curve.place(x=825, y=10)
 
     # 进化曲线画布
