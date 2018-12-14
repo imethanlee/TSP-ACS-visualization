@@ -116,6 +116,7 @@ if __name__ == '__main__':
         btn_start.config(state=tk.NORMAL)
         btn_stop.config(state=tk.DISABLED)
         break_now.set(1)
+        avg_list.clear()
 
     def command_clear():
         global image_path, im_path, image_curve, im_curve
