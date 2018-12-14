@@ -1,9 +1,7 @@
 # Document for Python project
 
 ### 项目名称：What is the shortest path?
-**Developer: 李悦新  
-Class：2017级计算机全英联合班  
-Student ID：201764621160**
+**Developer: Atlas Lee**
 
 **Github 地址** [https://github.com/Atlas666/TSP-ACS-visualization](https://github.com/Atlas666/TSP-ACS-visualization)
 
@@ -139,7 +137,7 @@ Student ID：201764621160**
     ```
     lock = threading.RLock()
     ```
-    - 在开始于停止操作中，分别对线程进行获取(acquire)与释放(release)。
+    - 在开始与停止操作中，分别对线程进行获取(acquire)与释放(release)。
     ```
     def command_start():
         btn_start.config(state=tk.DISABLED)
@@ -159,14 +157,14 @@ Student ID：201764621160**
 ### 六、经过一定改进后可应用场景
 1. 旅行商问题(TSP)
 2. Job—shop调度问题
-2. 车辆路由问题
-3. 图着色问题
-4. 网络路由问题
-5. 多目标优化
-6. 数据聚类
-7. 生物系统建模
-8. 机器人控制
-9. ...
+3. 车辆路由问题
+4. 图着色问题
+5. 网络路由问题
+6. 多目标优化
+7. 数据聚类
+8. 生物系统建模
+9. 机器人控制
+10. ...
 
 ### 七、参考文献
 1.  Dorigo, M. , & Gambardella, L. M. . (2002). Ant colony system: a cooperative learning approach to the traveling salesman problem. IEEE Transactions on Evolutionary Computation, 1(1), 53-66.
