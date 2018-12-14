@@ -111,6 +111,8 @@ if __name__ == '__main__':
         run()
 
     def command_stop():
+        lock.acquire()
+        lock.release()
         btn_start.config(state=tk.NORMAL)
         btn_stop.config(state=tk.DISABLED)
         break_now.set(1)
@@ -142,8 +144,8 @@ if __name__ == '__main__':
     # 测试数据下拉栏
     file = tk.StringVar()
     file_chosen = ttk.Combobox(window, width=21, textvariable=file)
-    file_chosen['values'] = ('Gr17', 'Oliver30', 'Eil51', 'Eil76', 'kroa100')  # 设置下拉列表的值
-    file_chosen.current(1)
+    file_chosen['values'] = ('Oliver30', 'Eil51', 'Eil76', 'kroa100', 'myTest')  # 设置下拉列表的值
+    file_chosen.current(0)
     file_chosen.place(x=40, y=40)
 
     # 进化代数label
