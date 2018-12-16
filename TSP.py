@@ -150,9 +150,8 @@ class ACS(object):
 
         # 更新历史最优蚂蚁
         if self.ant[0].dis < self.best.dis:
-            #self.best = self.ant[0].copy()
             self.best = copy.deepcopy(self.ant[0])
-            print(self.best.dis)
+            print("New Optimal distance is ", self.best.dis)
 
         # 对所有路径进行信息素蒸发
         for i in range(self.num_city):

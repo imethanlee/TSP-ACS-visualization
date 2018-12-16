@@ -156,7 +156,7 @@ if __name__ == '__main__':
     # 进化代数下拉栏
     gen = tk.IntVar()
     gen_chosen = ttk.Combobox(window, width=21, textvariable=gen)
-    gen_chosen['values'] = (500, 1000, 2000, 5000, 10000)
+    gen_chosen['values'] = (50, 100, 500, 1000, 2000, 5000, 10000)
     gen_chosen.current(0)
     gen_chosen.place(x=40, y=100)
 

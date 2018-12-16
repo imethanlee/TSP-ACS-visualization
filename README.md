@@ -1,7 +1,11 @@
 # Document for Python project
 
 ### 项目名称：What is the shortest path?
-**Developer: Atlas Lee**
+**Developer: 李悦新**
+
+**Class：2017级计算机全英联合班**
+
+**Student ID：201764621160**
 
 **Github 地址** [https://github.com/Atlas666/TSP-ACS-visualization](https://github.com/Atlas666/TSP-ACS-visualization)
 
