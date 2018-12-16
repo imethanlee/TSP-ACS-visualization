@@ -1,4 +1,4 @@
-# Document for Python project
+# Document for Python Project
 
 ### 项目名称：What is the shortest path?
 **Developer: 李悦新**
