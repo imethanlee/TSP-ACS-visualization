@@ -6,7 +6,7 @@
 
 **Developer: Atlas Lee**
 
-***Github 地址*** [https://github.com/Atlas666/TSP-ACS-visualization](https://github.com/Atlas666/TSP-ACS-visualization)
+***Github:*** [https://github.com/Atlas666/TSP-ACS-visualization](https://github.com/Atlas666/TSP-ACS-visualization)
 
 ### 一、功能实现
 1. 实现了**蚁群算法**(Ant Colony System).
