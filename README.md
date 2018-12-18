@@ -1,13 +1,12 @@
 # Document for Python Project
 
+***未经允许，请勿擅自复制、修改、传播。***
+
 ### 项目名称：What is the shortest path?
-**Developer: 李悦新**
 
-**Class：2017级计算机全英联合班**
+**Developer: Atlas Lee**
 
-**Student ID：201764621160**
-
-**Github 地址** [https://github.com/Atlas666/TSP-ACS-visualization](https://github.com/Atlas666/TSP-ACS-visualization)
+***Github 地址*** [https://github.com/Atlas666/TSP-ACS-visualization](https://github.com/Atlas666/TSP-ACS-visualization)
 
 ### 一、功能实现
 1. 实现了**蚁群算法**(Ant Colony System).
