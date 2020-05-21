@@ -4,7 +4,7 @@
 
 ### 项目名称：What is the shortest path?
 
-**Developer: Atlas Lee**
+**Developer: Ethan Lee**
 
 ***Github:*** [Click here](https://github.com/Atlas666/TSP-ACS-visualization)
 
