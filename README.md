@@ -21,7 +21,7 @@
 5. threading
 
 ### 三、软件截图
-![软件截图](https://raw.githubusercontent.com/imethanlee/TSP-ACS-visualization/master/screenshot.png)
+![软件截图](https://github.com/imethanlee/TSP-ACS-visualization/blob/master/screenshot.png)
 ### 四、使用说明
 1. 在项目根目录下，打开cmd或powershell，使用命令行输入以下命令打开主界面
 
